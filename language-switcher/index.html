@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mudador de Idiomas 🌍</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #0A0F1E;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* World map dots background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,154,60,0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      position: relative;
+      z-index: 10;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,154,60,0.2);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: #FF9A3C; }
+    .topbar-title { font-weight: 900; font-size: 1.1rem; flex: 1; text-align: center; }
+    .tag {
+      background: rgba(255,154,60,0.15);
+      color: #FF9A3C;
+      border: 1px solid rgba(255,154,60,0.3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    /* MAIN */
+    .main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 20px;
+      gap: 28px;
+      max-width: 720px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* LANGUAGE BUTTONS */
+    .lang-section {
+      width: 100%;
+      text-align: center;
+    }
+    .lang-title {
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+    .lang-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 12px 18px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .lang-btn:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-3px);
+    }
+    .lang-btn.active {
+      border-color: #FF9A3C;
+      background: rgba(255,154,60,0.15);
+      box-shadow: 0 4px 16px rgba(255,154,60,0.2);
+    }
+    .lang-btn.active:hover { transform: none; }
+    .lang-flag { font-size: 1.4rem; }
+
+    /* MYSTERY BUTTON */
+    .mystery-btn {
+      background: linear-gradient(135deg, #C77DFF, #7B2FBE);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      animation: mystery-pulse 2s ease-in-out infinite;
+    }
+    @keyframes mystery-pulse {
+      0%, 100% { box-shadow: 0 4px 16px rgba(199,125,255,0.3); }
+      50% { box-shadow: 0 6px 24px rgba(199,125,255,0.6); }
+    }
+    .mystery-btn:hover { transform: scale(1.05); }
+
+    /* APP CARD */
+    .app-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%;
+      transition: border-color 0.4s;
+    }
+
+    /* RTL support */
+    .app-card[dir="rtl"] {
+      text-align: right;
+    }
+
+    .app-greeting {
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      transition: all 0.3s;
+    }
+    .app-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 24px;
+      transition: all 0.3s;
+    }
+
+    .app-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .app-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .app-input {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .app-input:focus { border-color: #FF9A3C; }
+    .app-input::placeholder { color: rgba(255,255,255,0.2); }
+
+    .app-submit {
+      background: linear-gradient(135deg, #FF9A3C, #E65100);
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .app-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,154,60,0.4); }
+
+    /* Weather card */
+    .weather-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .weather-emoji { font-size: 2rem; }
+    .weather-info {}
+    .weather-title { font-size: 0.7rem; font-weight: 900; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+    .weather-desc { font-size: 0.95rem; font-weight: 800; transition: all 0.3s; }
+
+    /* Code peek section */
+    .code-peek {
+      width: 100%;
+      background: #0D0D0D;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .code-peek-header {
+      background: #1A1A1A;
+      padding: 12px 18px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .code-peek-dot { width: 7px; height: 7px; background: #FF9A3C; border-radius: 50%; }
+    .code-peek-body {
+      padding: 16px 18px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .ck { color: #FF79C6; }
+    .cv { color: #8BE9FD; }
+    .cs { color: #F1FA8C; }
+    .cc { color: #6272A4; font-style: italic; }
+    .co { color: #FF9A3C; }
+    .active-lang { background: rgba(255,154,60,0.15); border-radius: 4px; padding: 0 4px; }
+
+    /* Transition animation */
+    @keyframes langSwitch {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .switching { animation: langSwitch 0.3s ease forwards; }
+
+    .rtl-badge {
+      display: none;
+      background: rgba(199,125,255,0.2);
+      color: #C77DFF;
+      border: 1px solid rgba(199,125,255,0.4);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-align: center;
+    }
+    .rtl-badge.show { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="../index.html" class="back-btn">← Voltar</a>
+    <div class="topbar-title">🌍 Mudador de Idiomas</div>
+    <span class="tag">Demo 06</span>
+  </div>
+
+  <div class="main">
+
+    <!-- LANGUAGE BUTTONS -->
+    <div class="lang-section">
+      <div class="lang-title">🌐 Escolhe um Idioma</div>
+      <div class="lang-buttons">
+        <button class="lang-btn active" onclick="switchLang('pt')" id="btn-pt">
+          <span class="lang-flag">🇵🇹</span> Português
+        </button>
+        <button class="lang-btn" onclick="switchLang('en')" id="btn-en">
+          <span class="lang-flag">🇬🇧</span> English
+        </button>
+        <button class="lang-btn" onclick="switchLang('de')" id="btn-de">
+          <span class="lang-flag">🇩🇪</span> Deutsch
+        </button>
+        <button class="lang-btn" onclick="switchLang('ja')" id="btn-ja">
+          <span class="lang-flag">🇯🇵</span> 日本語
+        </button>
+        <button class="lang-btn" onclick="switchLang('ar')" id="btn-ar">
+          <span class="lang-flag">🇸🇦</span> العربية
+        </button>
+        <button class="mystery-btn" onclick="switchRandom()">
+          🎲 Idioma Misterioso!
+        </button>
+      </div>
+    </div>
+
+    <!-- RTL BADGE -->
+    <div class="rtl-badge" id="rtl-badge">
+      ✨ Magia! O árabe escreve-se da direita para a esquerda (RTL)!
+    </div>
+
+    <!-- APP CARD -->
+    <div class="app-card" id="app-card">
+      <div class="app-greeting" id="app-greeting">Olá, mundo! 👋</div>
+      <div class="app-subtitle" id="app-subtitle">Bem-vindo à nossa aplicação</div>
+
+      <div class="app-form">
+        <div>
+          <label class="app-label" id="label-name">O teu nome</label>
+          <input class="app-input" id="input-name" type="text" placeholder="Escreve aqui..." />
+        </div>
+        <div>
+          <label class="app-label" id="label-email">O teu e-mail</label>
+          <input class="app-input" id="input-email" type="text" placeholder="exemplo@mail.pt" />
+        </div>
+      </div>
+
+      <button class="app-submit" id="btn-submit">Enviar ✉️</button>
+
+      <br /><br />
+
+      <div class="weather-card">
+        <div class="weather-emoji">☀️</div>
+        <div class="weather-info">
+          <div class="weather-title" id="weather-title">Tempo de hoje</div>
+          <div class="weather-desc" id="weather-desc">Está sol! Temperatura: 22°C</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODE PEEK -->
+    <div class="code-peek">
+      <div class="code-peek-header">
+        <div class="code-peek-dot"></div>
+        Como as Traduções Funcionam no Código
+      </div>
+      <div class="code-peek-body" id="code-peek-body">
+        <span class="cc">// Dicionário de traduções:</span><br>
+        <span class="ck">const</span> <span class="cv">traducoes</span> = {<br>
+        &nbsp;&nbsp;<span class="co active-lang" id="peek-lang">"pt"</span>: {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">saudacao</span>: <span class="cs">"Olá, mundo! 👋"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">nome</span>: <span class="cs">"O teu nome"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">enviar</span>: <span class="cs">"Enviar ✉️"</span>,<br>
+        &nbsp;&nbsp;},<br>
+        &nbsp;&nbsp;<span class="cv">"en"</span>: { <span class="cv">saudacao</span>: <span class="cs">"Hello, world! 👋"</span>, ... },<br>
+        &nbsp;&nbsp;<span class="cv">"de"</span>: { <span class="cv">saudacao</span>: <span class="cs">"Hallo, Welt! 👋"</span>, ... },<br>
+        &nbsp;&nbsp;<span class="cv">"ja"</span>: { <span class="cv">saudacao</span>: <span class="cs">"こんにちは！👋"</span>, ... },<br>
+        &nbsp;&nbsp;<span class="cv">"ar"</span>: { <span class="cv">saudacao</span>: <span class="cs">"مرحبا بالعالم! 👋"</span>, ... },<br>
+        };<br><br>
+        <span class="cc">// Aplicar o idioma escolhido:</span><br>
+        <span class="ck">function</span> <span class="cv">mudarIdioma</span>(<span class="cv">codigo</span>) {<br>
+        &nbsp;&nbsp;<span class="ck">const</span> <span class="cv">t</span> = <span class="cv">traducoes</span>[<span class="cv">codigo</span>];<br>
+        &nbsp;&nbsp;<span class="cv">saudacao</span>.<span class="cv">texto</span> = <span class="cv">t</span>.<span class="cv">saudacao</span>;<br>
+        &nbsp;&nbsp;<span class="cv">botaoEnviar</span>.<span class="cv">texto</span> = <span class="cv">t</span>.<span class="cv">enviar</span>;<br>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const translations = {
+      pt: {
+        greeting: 'Olá, mundo! 👋',
+        subtitle: 'Bem-vindo à nossa aplicação',
+        labelName: 'O teu nome',
+        labelEmail: 'O teu e-mail',
+        placeholderName: 'Escreve aqui...',
+        placeholderEmail: 'exemplo@mail.pt',
+        submit: 'Enviar ✉️',
+        weatherTitle: 'Tempo de hoje',
+        weatherDesc: 'Está sol! Temperatura: 22°C',
+        dir: 'ltr',
+        flag: '🇵🇹',
+        peekLang: '"pt"',
+        peekGreeting: '"Olá, mundo! 👋"',
+        peekName: '"O teu nome"',
+        peekSubmit: '"Enviar ✉️"',
+      },
+      en: {
+        greeting: 'Hello, world! 👋',
+        subtitle: 'Welcome to our application',
+        labelName: 'Your name',
+        labelEmail: 'Your e-mail',
+        placeholderName: 'Type here...',
+        placeholderEmail: 'example@mail.com',
+        submit: 'Submit ✉️',
+        weatherTitle: "Today's weather",
+        weatherDesc: 'Sunny! Temperature: 22°C',
+        dir: 'ltr',
+        flag: '🇬🇧',
+        peekLang: '"en"',
+        peekGreeting: '"Hello, world! 👋"',
+        peekName: '"Your name"',
+        peekSubmit: '"Submit ✉️"',
+      },
+      de: {
+        greeting: 'Hallo, Welt! 👋',
+        subtitle: 'Willkommen in unserer App',
+        labelName: 'Dein Name',
+        labelEmail: 'Deine E-Mail',
+        placeholderName: 'Hier eingeben...',
+        placeholderEmail: 'beispiel@mail.de',
+        submit: 'Absenden ✉️',
+        weatherTitle: 'Heutiges Wetter',
+        weatherDesc: 'Sonnig! Temperatur: 22°C',
+        dir: 'ltr',
+        flag: '🇩🇪',
+        peekLang: '"de"',
+        peekGreeting: '"Hallo, Welt! 👋"',
+        peekName: '"Dein Name"',
+        peekSubmit: '"Absenden ✉️"',
+      },
+      ja: {
+        greeting: 'こんにちは！👋',
+        subtitle: 'アプリへようこそ',
+        labelName: 'お名前',
+        labelEmail: 'メールアドレス',
+        placeholderName: 'ここに入力...',
+        placeholderEmail: 'example@mail.jp',
+        submit: '送信 ✉️',
+        weatherTitle: '今日の天気',
+        weatherDesc: '晴れ！気温：22°C',
+        dir: 'ltr',
+        flag: '🇯🇵',
+        peekLang: '"ja"',
+        peekGreeting: '"こんにちは！👋"',
+        peekName: '"お名前"',
+        peekSubmit: '"送信 ✉️"',
+      },
+      ar: {
+        greeting: 'مرحباً بالعالم! 👋',
+        subtitle: 'أهلاً بك في تطبيقنا',
+        labelName: 'اسمك',
+        labelEmail: 'بريدك الإلكتروني',
+        placeholderName: 'اكتب هنا...',
+        placeholderEmail: 'مثال@mail.ar',
+        submit: 'إرسال ✉️',
+        weatherTitle: 'طقس اليوم',
+        weatherDesc: 'مشمس! درجة الحرارة: 22°C',
+        dir: 'rtl',
+        flag: '🇸🇦',
+        peekLang: '"ar"',
+        peekGreeting: '"مرحباً بالعالم! 👋"',
+        peekName: '"اسمك"',
+        peekSubmit: '"إرسال ✉️"',
+      },
+    };
+
+    let currentLang = 'pt';
+
+    function switchLang(code) {
+      if (code === currentLang) return;
+      currentLang = code;
+      const t = translations[code];
+
+      // Highlight active button
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('btn-' + code);
+      if (btn) btn.classList.add('active');
+
+      // Animate card
+      const card = document.getElementById('app-card');
+      card.classList.remove('switching');
+      void card.offsetWidth;
+      card.classList.add('switching');
+
+      // Apply translations
+      card.dir = t.dir;
+      document.getElementById('app-greeting').textContent = t.greeting;
+      document.getElementById('app-subtitle').textContent = t.subtitle;
+      document.getElementById('label-name').textContent = t.labelName;
+      document.getElementById('label-email').textContent = t.labelEmail;
+      document.getElementById('input-name').placeholder = t.placeholderName;
+      document.getElementById('input-email').placeholder = t.placeholderEmail;
+      document.getElementById('btn-submit').textContent = t.submit;
+      document.getElementById('weather-title').textContent = t.weatherTitle;
+      document.getElementById('weather-desc').textContent = t.weatherDesc;
+
+      // RTL badge
+      const badge = document.getElementById('rtl-badge');
+      badge.classList.toggle('show', t.dir === 'rtl');
+
+      // Update code peek
+      const peekLang = document.getElementById('peek-lang');
+      peekLang.textContent = t.peekLang;
+
+      const body = document.getElementById('code-peek-body');
+      body.innerHTML = `<span class="cc">// Dicionário de traduções:</span><br>
+<span class="ck">const</span> <span class="cv">traducoes</span> = {<br>
+&nbsp;&nbsp;<span class="co active-lang" id="peek-lang">${t.peekLang}</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">saudacao</span>: <span class="cs">${t.peekGreeting}</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">nome</span>: <span class="cs">${t.peekName}</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">enviar</span>: <span class="cs">${t.peekSubmit}</span>,<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="cv">...</span> <span class="cc">// outros idiomas aqui</span><br>
+};<br><br>
+<span class="cc">// ✅ Idioma atual aplicado: ${t.peekLang}</span><br>
+<span class="ck">mudarIdioma</span>(${t.peekLang});`;
+    }
+
+    function switchRandom() {
+      const langs = Object.keys(translations);
+      const others = langs.filter(l => l !== currentLang);
+      const pick = others[Math.floor(Math.random() * others.length)];
+      switchLang(pick);
+    }
+  </script>
+
+</body>
+</html>

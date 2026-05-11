@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A História das Escolhas 📖</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Courier+Prime:wght@400;700&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #1C0F0A;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,217,61,0.2);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: #FFD93D; }
+    .topbar-title { font-weight: 900; font-size: 1.1rem; flex: 1; text-align: center; }
+    .tag {
+      background: rgba(255,217,61,0.15);
+      color: #FFD93D;
+      border: 1px solid rgba(255,217,61,0.3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 0;
+      max-height: calc(100vh - 57px);
+    }
+
+    /* STORY PANEL */
+    .story-panel {
+      display: flex;
+      flex-direction: column;
+      padding: 32px;
+      overflow-y: auto;
+      gap: 24px;
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .progress-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.4);
+      white-space: nowrap;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD93D, #FF6B6B);
+      border-radius: 99px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    .progress-step {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #FFD93D;
+      white-space: nowrap;
+    }
+
+    /* Story card */
+    .story-card {
+      background: rgba(255,217,61,0.06);
+      border: 2px solid rgba(255,217,61,0.2);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+    }
+
+    .story-chapter {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #FFD93D;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .story-text {
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .story-text .highlight {
+      color: #FFD93D;
+      font-weight: 800;
+    }
+
+    /* Choices */
+    .choices-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .choice-btn {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,217,61,0.3);
+      border-radius: 14px;
+      padding: 16px 20px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover {
+      background: rgba(255,217,61,0.1);
+      border-color: #FFD93D;
+      transform: translateX(6px);
+    }
+    .choice-btn .choice-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    /* Ending card */
+    .ending-card {
+      border-radius: 20px;
+      padding: 28px;
+      text-align: center;
+      display: none;
+    }
+    .ending-card.show { display: block; }
+    .ending-card.good { background: linear-gradient(135deg, rgba(107,203,119,0.2), rgba(107,203,119,0.05)); border: 2px solid rgba(107,203,119,0.4); }
+    .ending-card.neutral { background: linear-gradient(135deg, rgba(255,217,61,0.2), rgba(255,217,61,0.05)); border: 2px solid rgba(255,217,61,0.4); }
+    .ending-card.funny { background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(255,107,107,0.05)); border: 2px solid rgba(255,107,107,0.4); }
+
+    .ending-emoji { font-size: 4rem; margin-bottom: 16px; }
+    .ending-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+    .ending-text { font-size: 1rem; line-height: 1.7; color: rgba(255,255,255,0.75); margin-bottom: 20px; }
+    .restart-btn {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      padding: 12px 24px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .restart-btn:hover { background: rgba(255,255,255,0.2); }
+
+    /* CODE PANEL */
+    .code-panel {
+      background: #0D0D0D;
+      border-left: 2px solid rgba(255,217,61,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .code-header {
+      background: #1A1A1A;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .code-dot { width: 8px; height: 8px; background: #FFD93D; border-radius: 50%; animation: blink 1.5s ease-in-out infinite; }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+    .code-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+
+    .code-line { display: flex; gap: 12px; }
+    .line-num { color: #444; min-width: 20px; text-align: right; user-select: none; }
+    .code-keyword { color: #FF79C6; }
+    .code-string { color: #F1FA8C; }
+    .code-comment { color: #6272A4; font-style: italic; }
+    .code-var { color: #8BE9FD; }
+    .code-value { color: #BD93F9; }
+    .code-fn { color: #50FA7B; }
+
+    .code-highlight {
+      background: rgba(255,217,61,0.12);
+      border-left: 3px solid #FFD93D;
+      margin: 0 -20px;
+      padding: 2px 20px;
+      transition: background 0.3s;
+    }
+
+    .code-explanation {
+      background: #111;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 20px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+    .code-explanation strong { color: #FFD93D; }
+
+    /* Fade-in animation */
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeSlideIn 0.4s ease forwards; }
+
+    @media (max-width: 800px) {
+      .main { grid-template-columns: 1fr; max-height: none; }
+      .code-panel { border-left: none; border-top: 2px solid rgba(255,217,61,0.2); min-height: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="../index.html" class="back-btn">← Voltar</a>
+    <div class="topbar-title">📖 A História das Escolhas</div>
+    <span class="tag">Demo 02</span>
+  </div>
+
+  <div class="main">
+
+    <!-- STORY -->
+    <div class="story-panel" id="story-panel">
+
+      <div class="progress-wrap">
+        <div class="progress-label">Progresso</div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-step" id="progress-step">Capítulo 1/4</div>
+      </div>
+
+      <div id="story-content"></div>
+      <div id="choices-area"></div>
+      <div class="ending-card" id="ending-card">
+        <div class="ending-emoji" id="ending-emoji"></div>
+        <div class="ending-title" id="ending-title"></div>
+        <div class="ending-text" id="ending-text"></div>
+        <button class="restart-btn" onclick="startStory()">🔄 Recomeçar a Aventura</button>
+      </div>
+
+    </div>
+
+    <!-- CODE PANEL -->
+    <div class="code-panel">
+      <div class="code-header">
+        <div class="code-dot"></div>
+        O que o Computador Decidiu
+      </div>
+      <div class="code-body" id="code-body">
+        <div class="code-line"><span class="line-num">1</span><span class="code-comment">// Aguardando a tua escolha...</span></div>
+        <div class="code-line"><span class="line-num">2</span><span></span></div>
+        <div class="code-line"><span class="line-num">3</span><span class="code-keyword">se</span><span> (</span><span class="code-var">escolha</span><span> === </span><span class="code-string">"..."</span><span>) {</span></div>
+        <div class="code-line"><span class="line-num">4</span><span>  </span><span class="code-fn">mostrar</span><span>(</span><span class="code-string">"próxima cena"</span><span>);</span></div>
+        <div class="code-line"><span class="line-num">5</span><span>} </span><span class="code-keyword">senão</span><span> {</span></div>
+        <div class="code-line"><span class="line-num">6</span><span>  </span><span class="code-fn">mostrar</span><span>(</span><span class="code-string">"outra cena"</span><span>);</span></div>
+        <div class="code-line"><span class="line-num">7</span><span>}</span></div>
+      </div>
+      <div class="code-explanation" id="code-explanation">
+        <strong>💡 Como funciona:</strong> O computador lê a tua escolha e usa o <strong>if/else</strong> (se/senão) para decidir o que mostrar a seguir. É assim que todas as apps funcionam!
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const story = {
+      start: {
+        chapter: '✨ Capítulo 1 — A Floresta Mágica',
+        text: 'Estás numa floresta mágica. À tua frente há um <span class="highlight">caminho brilhante</span> e uma <span class="highlight">cabana misteriosa</span>. O vento sussurra: <em>"Escolhe com sabedoria..."</em>',
+        choices: [
+          { icon: '🌟', text: 'Seguir o caminho brilhante', next: 'path_bright', codeKey: 'choice_path' },
+          { icon: '🏚️', text: 'Entrar na cabana misteriosa', next: 'cabin', codeKey: 'choice_cabin' },
+        ],
+        progress: 25,
+        step: 'Capítulo 1/4'
+      },
+      path_bright: {
+        chapter: '🌟 Capítulo 2 — O Caminho Brilhante',
+        text: 'O caminho leva-te a uma <span class="highlight">aldeia de elfos</span>! Eles precisam de ajuda. Há uma <span class="highlight">ponte quebrada</span> que não conseguem reparar. Podes ajudar?',
+        choices: [
+          { icon: '🔧', text: 'Ajudar a reparar a ponte', next: 'ending_good', codeKey: 'choice_help' },
+          { icon: '🏃', text: 'Continuar sem parar', next: 'ending_neutral', codeKey: 'choice_ignore' },
+        ],
+        progress: 50,
+        step: 'Capítulo 2/4'
+      },
+      cabin: {
+        chapter: '🏚️ Capítulo 2 — A Cabana Misteriosa',
+        text: 'Dentro da cabana encontras um <span class="highlight">gato falante</span> chamado Bolinha! Ele diz que sabe o caminho para o tesouro. Acreditas nele?',
+        choices: [
+          { icon: '🐱', text: 'Seguir o Bolinha', next: 'ending_funny', codeKey: 'choice_cat' },
+          { icon: '🚪', text: 'Sair correndo!', next: 'ending_neutral', codeKey: 'choice_run' },
+        ],
+        progress: 50,
+        step: 'Capítulo 2/4'
+      },
+      ending_good: null,
+      ending_neutral: null,
+      ending_funny: null,
+    };
+
+    const codeSnippets = {
+      choice_path: {
+        lines: [
+          { text: '// O utilizador escolheu o caminho!', cls: 'code-comment' },
+          { text: '' },
+          { text: 'const escolha = "caminho_brilhante";', cls: 'code-var', highlight: true },
+          { text: '' },
+          { text: 'if (escolha === "caminho_brilhante") {', cls: 'code-keyword', highlight: true },
+          { text: '  mostrarCena("aldeia_dos_elfos");', cls: 'code-fn', highlight: true },
+          { text: '} else if (escolha === "cabana") {' },
+          { text: '  mostrarCena("cabana_misteriosa");' },
+          { text: '}' },
+        ],
+        explanation: '<strong>✅ Condição VERDADEIRA!</strong> A variável <strong>escolha</strong> era <strong>"caminho_brilhante"</strong>, então o computador entrou no primeiro bloco <strong>if</strong> e mostrou a aldeia dos elfos.'
+      },
+      choice_cabin: {
+        lines: [
+          { text: '// O utilizador escolheu a cabana!', cls: 'code-comment' },
+          { text: '' },
+          { text: 'const escolha = "cabana";', cls: 'code-var', highlight: true },
+          { text: '' },
+          { text: 'if (escolha === "caminho_brilhante") {' },
+          { text: '  mostrarCena("aldeia_dos_elfos");' },
+          { text: '} else if (escolha === "cabana") {', cls: 'code-keyword', highlight: true },
+          { text: '  mostrarCena("cabana_misteriosa");', cls: 'code-fn', highlight: true },
+          { text: '}', highlight: true },
+        ],
+        explanation: '<strong>↘️ Saltou para o else if!</strong> A primeira condição era FALSA, então o computador verificou a segunda — que era VERDADEIRA — e mostrou a cabana.'
+      },
+      choice_help: {
+        lines: [
+          { text: '// Vai ajudar os elfos!', cls: 'code-comment' },
+          { text: '' },
+          { text: 'const decisao = "ajudar";', cls: 'code-var', highlight: true },
+          { text: '' },
+          { text: 'if (decisao === "ajudar") {', cls: 'code-keyword', highlight: true },
+          { text: '  pontuacao = pontuacao + 100;', cls: '', highlight: true },
+          { text: '  mostrarFinal("heroi");', cls: 'code-fn', highlight: true },
+          { text: '} else {' },
+          { text: '  mostrarFinal("neutro");' },
+          { text: '}' },
+        ],
+        explanation: '<strong>🦸 Herói desbloqueado!</strong> Ao ajudar, o código adicionou pontos e ativou o final do herói. No código, boas ações = boas recompensas!'
+      },
+      choice_ignore: {
+        lines: [
+          { text: '// Passou sem ajudar...', cls: 'code-comment' },
+          { text: '' },
+          { text: 'const decisao = "ignorar";', cls: 'code-var' },
+          { text: '' },
+          { text: 'if (decisao === "ajudar") {' },
+          { text: '  pontuacao = pontuacao + 100;' },
+          { text: '} else {', cls: 'code-keyword', highlight: true },
+          { text: '  mostrarFinal("neutro");', cls: 'code-fn', highlight: true },
+          { text: '}', highlight: true },
+        ],
+        explanation: '<strong>↘️ Bloco else ativado!</strong> Como não escolheu "ajudar", o computador foi direto para o <strong>else</strong> — o plano B!'
+      },
+      choice_cat: {
+        lines: [
+          { text: '// Seguiu o gato falante! 🐱', cls: 'code-comment' },
+          { text: '' },
+          { text: 'const confia_em_gatos = true;', cls: 'code-var', highlight: true },
+          { text: '' },
+          { text: 'if (confia_em_gatos === true) {', cls: 'code-keyword', highlight: true },
+          { text: '  aventura = "inesperada";', cls: '', highlight: true },
+          { text: '  mostrarFinal("hilariante");', cls: 'code-fn', highlight: true },
+          { text: '}' },
+        ],
+        explanation: '<strong>😂 Decisão corajosa!</strong> A variável <strong>confia_em_gatos</strong> é <strong>true</strong>, então o código ativou a aventura inesperada com o Bolinha!'
+      },
+      choice_run: {
+        lines: [
+          { text: '// Fugiu da cabana!', cls: 'code-comment' },
+          { text: '' },
+          { text: 'const reacao = "fuga";', cls: 'code-var' },
+          { text: '' },
+          { text: 'if (reacao === "explorar") {' },
+          { text: '  mostrarFinal("aventureiro");' },
+          { text: '} else {', cls: 'code-keyword', highlight: true },
+          { text: '  mostrarFinal("neutro");', cls: 'code-fn', highlight: true },
+          { text: '}', highlight: true },
+        ],
+        explanation: '<strong>↘️ Bloco else!</strong> Como fugiu, o código foi para o caminho alternativo e mostrou o final neutro.'
+      },
+    };
+
+    const endings = {
+      ending_good: {
+        type: 'good',
+        emoji: '🏆',
+        title: 'FIM PERFEITO — O Grande Herói!',
+        text: 'Reparaste a ponte e os elfos ficaram tão contentes que te deram um mapa do tesouro dourado! A tua bondade foi recompensada. O computador guardou as tuas boas ações na memória!'
+      },
+      ending_neutral: {
+        type: 'neutral',
+        emoji: '🌅',
+        title: 'FIM TRANQUILO — Uma Aventura Simples',
+        text: 'Continuaste o teu caminho e chegaste a casa ao fim do dia. Não foi uma aventura épica, mas foi segura. Às vezes o computador também escolhe o caminho mais simples!'
+      },
+      ending_funny: {
+        type: 'funny',
+        emoji: '😂',
+        title: 'FIM HILARIANTE — O Gato Enganou-te!',
+        text: 'O Bolinha levou-te... para a sua casa de rato! Era uma armadilha felina. Ficaste preso a ouvir histórias de gatos durante horas. O computador pode ter bugs engraçados também!'
+      },
+    };
+
+    let currentNode = 'start';
+
+    function renderCode(key) {
+      const snippet = codeSnippets[key];
+      if (!snippet) return;
+      const body = document.getElementById('code-body');
+      body.innerHTML = '';
+      snippet.lines.forEach((line, i) => {
+        const div = document.createElement('div');
+        div.className = 'code-line' + (line.highlight ? ' code-highlight' : '');
+        const numSpan = document.createElement('span');
+        numSpan.className = 'line-num';
+        numSpan.textContent = i + 1;
+        const codeSpan = document.createElement('span');
+        if (line.cls) codeSpan.className = line.cls;
+        codeSpan.textContent = line.text;
+        div.appendChild(numSpan);
+        div.appendChild(codeSpan);
+        body.appendChild(div);
+      });
+      document.getElementById('code-explanation').innerHTML = '<strong>💡 O que aconteceu:</strong> ' + snippet.explanation;
+    }
+
+    function renderNode(nodeKey) {
+      const panel = document.getElementById('story-content');
+      const choicesEl = document.getElementById('choices-area');
+      const endingCard = document.getElementById('ending-card');
+
+      // Check if it's an ending
+      if (endings[nodeKey]) {
+        const e = endings[nodeKey];
+        panel.innerHTML = '';
+        choicesEl.innerHTML = '';
+        endingCard.className = 'ending-card show ' + e.type;
+        document.getElementById('ending-emoji').textContent = e.emoji;
+        document.getElementById('ending-title').textContent = e.title;
+        document.getElementById('ending-text').textContent = e.text;
+        document.getElementById('progress-fill').style.width = '100%';
+        document.getElementById('progress-step').textContent = '✅ Fim!';
+        return;
+      }
+
+      endingCard.className = 'ending-card';
+      const node = story[nodeKey];
+      document.getElementById('progress-fill').style.width = node.progress + '%';
+      document.getElementById('progress-step').textContent = node.step;
+
+      panel.innerHTML = `
+        <div class="story-card animate-in">
+          <div class="story-chapter">${node.chapter}</div>
+          <div class="story-text">${node.text}</div>
+        </div>
+      `;
+
+      choicesEl.innerHTML = `
+        <div class="choices-title">O que vais fazer?</div>
+        <div class="choices"></div>
+      `;
+      const choicesContainer = choicesEl.querySelector('.choices');
+      node.choices.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn animate-in';
+        btn.innerHTML = `<span class="choice-icon">${c.icon}</span><span>${c.text}</span>`;
+        btn.onclick = () => {
+          renderCode(c.codeKey);
+          setTimeout(() => renderNode(c.next), 600);
+        };
+        choicesContainer.appendChild(btn);
+      });
+    }
+
+    function startStory() {
+      document.getElementById('ending-card').className = 'ending-card';
+      renderNode('start');
+    }
+
+    startStory();
+  </script>
+
+</body>
+</html>

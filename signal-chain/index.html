@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadeia de Sinais ⚡</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #050B18;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(77,150,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(77,150,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      position: relative;
+      z-index: 10;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(77,150,255,0.2);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: #4D96FF; }
+    .topbar-title { font-weight: 900; font-size: 1.1rem; flex: 1; text-align: center; }
+    .tag {
+      background: rgba(77,150,255,0.15);
+      color: #4D96FF;
+      border: 1px solid rgba(77,150,255,0.3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    /* MAIN */
+    .main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      padding: 32px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* SLIDER SECTION */
+    .slider-section {
+      text-align: center;
+    }
+    .slider-label {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .temp-display {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 16px;
+      transition: color 0.4s;
+    }
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .slider-icon { font-size: 1.5rem; }
+    .temp-slider {
+      flex: 1;
+      height: 8px;
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #4D96FF, #FFD93D, #FF6B6B);
+    }
+    .temp-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 28px;
+      height: 28px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(77,150,255,0.7);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+    .temp-slider::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 20px rgba(77,150,255,1);
+    }
+
+    /* CHAIN */
+    .chain {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      position: relative;
+    }
+
+    .chain-node {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+
+    .chain-node.active {
+      border-color: currentColor;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .node-n1 { color: #4D96FF; }
+    .node-n2 { color: #6BCB77; }
+    .node-n3 { color: #FFD93D; }
+    .node-n4 { color: #FF6B6B; }
+
+    .node-n1.active { box-shadow: 0 0 24px rgba(77,150,255,0.3); }
+    .node-n2.active { box-shadow: 0 0 24px rgba(107,203,119,0.3); }
+    .node-n3.active { box-shadow: 0 0 24px rgba(255,217,61,0.3); }
+    .node-n4.active { box-shadow: 0 0 24px rgba(255,107,107,0.3); }
+
+    .node-icon { font-size: 2rem; }
+    .node-label {
+      font-size: 0.65rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      opacity: 0.7;
+    }
+    .node-value {
+      font-size: 1.4rem;
+      font-weight: 900;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .node-formula {
+      font-size: 0.7rem;
+      font-family: monospace;
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 3px 8px;
+      opacity: 0.6;
+    }
+
+    /* Arrow between nodes */
+    .chain-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      flex-shrink: 0;
+    }
+    .arrow-svg {
+      width: 32px;
+      height: 24px;
+    }
+    .arrow-path {
+      stroke: rgba(255,255,255,0.2);
+      stroke-width: 2;
+      fill: none;
+      stroke-dasharray: 6;
+      animation: dash 1.5s linear infinite;
+      transition: stroke 0.3s;
+    }
+    .arrow-path.flowing {
+      stroke: #4D96FF;
+      animation: dash 0.4s linear infinite;
+    }
+    @keyframes dash {
+      from { stroke-dashoffset: 12; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Broken chain overlay */
+    .break-overlay {
+      position: absolute;
+      inset: -2px;
+      border-radius: 16px;
+      background: rgba(255,0,0,0.15);
+      border: 2px solid #FF6B6B;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .break-overlay.show { display: flex; }
+
+    /* Thermometer */
+    .thermometer-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .thermo-bar {
+      width: 20px;
+      height: 80px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .thermo-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-radius: 10px;
+      transition: height 0.4s, background 0.4s;
+    }
+    .thermo-val { font-size: 1.2rem; font-weight: 900; }
+
+    /* CONTROLS */
+    .controls {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .ctrl-btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ctrl-btn:hover { transform: translateY(-2px); }
+    .ctrl-btn:active { transform: scale(0.97); }
+    .btn-break { background: linear-gradient(135deg, #FF6B6B, #c0392b); color: #fff; }
+    .btn-break:hover { box-shadow: 0 6px 20px rgba(255,107,107,0.4); }
+    .btn-fix { background: linear-gradient(135deg, #6BCB77, #4CAF50); color: #001a06; }
+    .btn-fix:hover { box-shadow: 0 6px 20px rgba(107,203,119,0.4); }
+
+    /* INFO */
+    .info-bar {
+      background: rgba(77,150,255,0.08);
+      border: 1px solid rgba(77,150,255,0.2);
+      border-radius: 14px;
+      padding: 16px 22px;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      text-align: center;
+    }
+    .info-bar strong { color: #4D96FF; }
+
+    @media (max-width: 600px) {
+      .chain { flex-direction: column; align-items: stretch; }
+      .chain-arrow { transform: rotate(90deg); margin: 4px auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="../index.html" class="back-btn">← Voltar</a>
+    <div class="topbar-title">⚡ Cadeia de Sinais</div>
+    <span class="tag">Demo 04</span>
+  </div>
+
+  <div class="main">
+
+    <!-- SLIDER -->
+    <div class="slider-section">
+      <div class="slider-label">🌡️ Controla a Temperatura</div>
+      <div class="temp-display" id="temp-display">20°C</div>
+      <div class="slider-wrap">
+        <span class="slider-icon">🥶</span>
+        <input type="range" class="temp-slider" id="temp-slider" min="0" max="100" value="20" />
+        <span class="slider-icon">🔥</span>
+      </div>
+    </div>
+
+    <!-- CHAIN -->
+    <div class="chain" id="chain">
+
+      <!-- Node 1: Raw Value -->
+      <div class="chain-node node-n1" id="node-1">
+        <div class="node-icon">🎚️</div>
+        <div class="node-label">Valor Original</div>
+        <div class="node-value" id="n1-val">20</div>
+        <div class="node-formula">entrada: slider</div>
+        <div class="break-overlay" id="break-1">⛔</div>
+      </div>
+
+      <div class="chain-arrow">
+        <svg class="arrow-svg" viewBox="0 0 32 24">
+          <path class="arrow-path" id="arr-1" d="M2 12 L28 12 M22 6 L28 12 L22 18" />
+        </svg>
+      </div>
+
+      <!-- Node 2: Fahrenheit -->
+      <div class="chain-node node-n2" id="node-2">
+        <div class="node-icon">🌡️</div>
+        <div class="node-label">Fahrenheit</div>
+        <div class="node-value" id="n2-val">68°F</div>
+        <div class="node-formula">× 1.8 + 32</div>
+        <div class="break-overlay" id="break-2">⛔</div>
+      </div>
+
+      <div class="chain-arrow">
+        <svg class="arrow-svg" viewBox="0 0 32 24">
+          <path class="arrow-path" id="arr-2" d="M2 12 L28 12 M22 6 L28 12 L22 18" />
+        </svg>
+      </div>
+
+      <!-- Node 3: Status Emoji -->
+      <div class="chain-node node-n3" id="node-3">
+        <div class="node-icon">😊</div>
+        <div class="node-label">Estado</div>
+        <div class="node-value" id="n3-val">😊 Confortável</div>
+        <div class="node-formula">if/else</div>
+        <div class="break-overlay" id="break-3">⛔</div>
+      </div>
+
+      <div class="chain-arrow">
+        <svg class="arrow-svg" viewBox="0 0 32 24">
+          <path class="arrow-path" id="arr-3" d="M2 12 L28 12 M22 6 L28 12 L22 18" />
+        </svg>
+      </div>
+
+      <!-- Node 4: Visual Thermometer -->
+      <div class="chain-node node-n4" id="node-4">
+        <div class="node-icon" id="n4-icon">🌡️</div>
+        <div class="node-label">Termómetro</div>
+        <div class="thermometer-wrap">
+          <div class="thermo-bar">
+            <div class="thermo-fill" id="thermo-fill" style="height:20%;background:#4D96FF"></div>
+          </div>
+          <div class="thermo-val" id="thermo-pct">20%</div>
+        </div>
+        <div class="node-formula">visual</div>
+        <div class="break-overlay" id="break-4">⛔</div>
+      </div>
+
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <button class="ctrl-btn btn-break" id="break-btn" onclick="breakChain()">⛓️ Partir a Cadeia!</button>
+      <button class="ctrl-btn btn-fix" id="fix-btn" onclick="fixChain()" style="display:none">🔧 Reparar a Cadeia!</button>
+    </div>
+
+    <!-- INFO -->
+    <div class="info-bar" id="info-bar">
+      <strong>⚡ Como funciona:</strong> Move o slider e vê os dados fluírem de nó em nó como eletricidade! Cada nó <strong>transforma</strong> a informação antes de a passar para o seguinte. É assim que React, Angular e outras apps funcionam!
+    </div>
+
+  </div>
+
+  <script>
+    let broken = false;
+    let animTimer = null;
+
+    const slider = document.getElementById('temp-slider');
+
+    function getStatus(temp) {
+      if (temp <= 10) return { emoji: '🥶', text: 'Frio!', color: '#4D96FF' };
+      if (temp <= 25) return { emoji: '😊', text: 'Confortável', color: '#6BCB77' };
+      if (temp <= 40) return { emoji: '😅', text: 'Quente!', color: '#FFD93D' };
+      return { emoji: '🔥', text: 'Muito Quente!', color: '#FF6B6B' };
+    }
+
+    function animateNodes(temp) {
+      if (broken) return;
+
+      const nodes = ['node-1','node-2','node-3','node-4'];
+      const arrows = ['arr-1','arr-2','arr-3'];
+
+      // Reset
+      nodes.forEach(id => document.getElementById(id).classList.remove('active'));
+      arrows.forEach(id => document.getElementById(id).classList.remove('flowing'));
+
+      let delay = 0;
+      nodes.forEach((id, i) => {
+        setTimeout(() => {
+          if (!broken) {
+            document.getElementById(id).classList.add('active');
+            if (i < arrows.length) document.getElementById(arrows[i]).classList.add('flowing');
+          }
+        }, delay);
+        delay += 120;
+      });
+    }
+
+    function updateChain() {
+      const temp = parseInt(slider.value);
+      const fahr = Math.round(temp * 1.8 + 32);
+      const status = getStatus(temp);
+      const pct = temp;
+
+      // Update display
+      const displayEl = document.getElementById('temp-display');
+      displayEl.textContent = temp + '°C';
+      displayEl.style.color = status.color;
+
+      document.getElementById('n1-val').textContent = temp + '°C';
+      document.getElementById('n2-val').textContent = fahr + '°F';
+      document.getElementById('n3-val').textContent = status.emoji + ' ' + status.text;
+      document.getElementById('n3-val').parentElement.querySelector('.node-icon').textContent = status.emoji;
+
+      const fill = document.getElementById('thermo-fill');
+      fill.style.height = pct + '%';
+      fill.style.background = status.color;
+      document.getElementById('thermo-pct').textContent = pct + '%';
+      document.getElementById('n4-icon').textContent = status.emoji;
+
+      if (!broken) animateNodes(temp);
+    }
+
+    slider.addEventListener('input', () => {
+      clearTimeout(animTimer);
+      updateChain();
+    });
+
+    function breakChain() {
+      broken = true;
+      document.getElementById('break-btn').style.display = 'none';
+      document.getElementById('fix-btn').style.display = 'flex';
+
+      // Show breaks on nodes 3 and 4
+      document.getElementById('break-3').classList.add('show');
+      document.getElementById('break-4').classList.add('show');
+      document.getElementById('arr-2').style.stroke = '#FF6B6B';
+      document.getElementById('arr-3').style.stroke = '#FF6B6B';
+
+      document.getElementById('n3-val').textContent = '❌ Erro!';
+      document.getElementById('n4-icon').textContent = '❌';
+      document.getElementById('thermo-fill').style.background = '#FF6B6B';
+      document.getElementById('thermo-fill').style.height = '0%';
+      document.getElementById('thermo-pct').textContent = '💥';
+
+      document.getElementById('info-bar').innerHTML = '<strong>💥 Cadeia partida!</strong> Quando uma parte do código deixa de funcionar, tudo o que depende dela também para! Os programadores chamam a isto um <strong>"bug"</strong>. Clica em "Reparar" para resolver!';
+    }
+
+    function fixChain() {
+      broken = false;
+      document.getElementById('fix-btn').style.display = 'none';
+      document.getElementById('break-btn').style.display = 'flex';
+
+      ['break-1','break-2','break-3','break-4'].forEach(id => {
+        document.getElementById(id).classList.remove('show');
+      });
+      ['arr-1','arr-2','arr-3'].forEach(id => {
+        document.getElementById(id).style.stroke = '';
+      });
+
+      document.getElementById('info-bar').innerHTML = '<strong>✅ Reparado!</strong> Muito bem! Agora a cadeia volta a fluir normalmente. Mexe no slider para ver os dados a viajar novamente!';
+
+      updateChain();
+    }
+
+    // Init
+    updateChain();
+  </script>
+
+</body>
+</html>

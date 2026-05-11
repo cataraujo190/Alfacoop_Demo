@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caixas de Variáveis 📦</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #0A1628;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(107,203,119,0.2);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: #6BCB77; }
+    .topbar-title { font-weight: 900; font-size: 1.1rem; flex: 1; text-align: center; }
+    .tag {
+      background: rgba(107,203,119,0.15);
+      color: #6BCB77;
+      border: 1px solid rgba(107,203,119,0.3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      padding: 28px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* INTRO */
+    .intro {
+      text-align: center;
+    }
+    .intro h2 {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #6BCB77;
+      margin-bottom: 6px;
+    }
+    .intro p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+    }
+
+    /* BOXES GRID */
+    .boxes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px;
+    }
+
+    .box-card {
+      border-radius: 18px;
+      padding: 18px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .box-card:hover { transform: translateY(-4px); }
+
+    .box-1 { background: linear-gradient(145deg, #FF6B6B22, #FF6B6B11); border: 2px solid #FF6B6B66; }
+    .box-2 { background: linear-gradient(145deg, #FFD93D22, #FFD93D11); border: 2px solid #FFD93D66; }
+    .box-3 { background: linear-gradient(145deg, #6BCB7722, #6BCB7711); border: 2px solid #6BCB7766; }
+    .box-4 { background: linear-gradient(145deg, #4D96FF22, #4D96FF11); border: 2px solid #4D96FF66; }
+    .box-5 { background: linear-gradient(145deg, #C77DFF22, #C77DFF11); border: 2px solid #C77DFF66; }
+
+    .box-lid {
+      font-size: 2rem;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .box-card:focus-within .box-lid { transform: translateY(-8px) rotate(-15deg); }
+
+    .box-name {
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .box-1 .box-name { color: #FF6B6B; }
+    .box-2 .box-name { color: #FFD93D; }
+    .box-3 .box-name { color: #6BCB77; }
+    .box-4 .box-name { color: #4D96FF; }
+    .box-5 .box-name { color: #C77DFF; }
+
+    .box-input {
+      background: rgba(255,255,255,0.07);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+      text-align: center;
+    }
+    .box-1 .box-input:focus { border-color: #FF6B6B; }
+    .box-2 .box-input:focus { border-color: #FFD93D; }
+    .box-3 .box-input:focus { border-color: #6BCB77; }
+    .box-4 .box-input:focus { border-color: #4D96FF; }
+    .box-5 .box-input:focus { border-color: #C77DFF; }
+    .box-input::placeholder { color: rgba(255,255,255,0.2); font-weight: 400; }
+
+    /* Action buttons */
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .action-btn:hover { transform: translateY(-2px); }
+    .action-btn:active { transform: scale(0.97); }
+
+    .btn-scramble {
+      background: linear-gradient(135deg, #FFD93D, #FF9A3C);
+      color: #1A0A00;
+    }
+    .btn-scramble:hover { box-shadow: 0 6px 20px rgba(255,217,61,0.35); }
+
+    .btn-clear {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .btn-clear:hover { background: rgba(255,255,255,0.15); }
+
+    .btn-code {
+      background: linear-gradient(135deg, #6BCB77, #4CAF50);
+      color: #001A06;
+    }
+    .btn-code:hover { box-shadow: 0 6px 20px rgba(107,203,119,0.35); }
+
+    /* STORY OUTPUT */
+    .story-output {
+      background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 28px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .story-output::before {
+      content: '📜';
+      position: absolute;
+      right: 20px;
+      top: 16px;
+      font-size: 1.5rem;
+      opacity: 0.3;
+    }
+    .story-label {
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #6BCB77;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .story-output-text {
+      font-size: 1.1rem;
+      line-height: 2;
+      color: rgba(255,255,255,0.85);
+    }
+    .var-highlight {
+      font-weight: 900;
+      padding: 1px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    .var-1 { color: #1A0A00; background: #FF6B6B; }
+    .var-2 { color: #1A0A00; background: #FFD93D; }
+    .var-3 { color: #001A06; background: #6BCB77; }
+    .var-4 { color: #001030; background: #4D96FF; }
+    .var-5 { color: #1A0030; background: #C77DFF; }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .pop { animation: pop 0.3s ease; }
+
+    /* CODE MODAL */
+    .code-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .code-overlay.show { display: flex; }
+    .code-modal {
+      background: #0D0D0D;
+      border: 2px solid rgba(107,203,119,0.3);
+      border-radius: 20px;
+      max-width: 560px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .code-modal-header {
+      background: #1A1A1A;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .code-modal-title {
+      font-weight: 900;
+      color: #6BCB77;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+    .code-close {
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: #fff;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .code-close:hover { background: rgba(255,255,255,0.2); }
+    .code-modal-body {
+      padding: 20px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.9;
+      overflow-x: auto;
+    }
+    .cm-keyword { color: #FF79C6; }
+    .cm-var { color: #8BE9FD; }
+    .cm-string { color: #F1FA8C; }
+    .cm-comment { color: #6272A4; font-style: italic; }
+    .cm-green { color: #50FA7B; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="../index.html" class="back-btn">← Voltar</a>
+    <div class="topbar-title">📦 Caixas de Variáveis</div>
+    <span class="tag">Demo 03</span>
+  </div>
+
+  <div class="main">
+
+    <div class="intro">
+      <h2>📦 Cada caixa guarda um valor diferente!</h2>
+      <p>Escreve nas caixas e vê a história mudar automaticamente. As variáveis são como caixas mágicas na memória do computador.</p>
+    </div>
+
+    <!-- BOXES -->
+    <div class="boxes-grid">
+      <div class="box-card box-1">
+        <div class="box-lid">📦</div>
+        <div class="box-name">meuNome</div>
+        <input class="box-input" id="v-nome" type="text" placeholder="O teu nome" maxlength="20" />
+      </div>
+      <div class="box-card box-2">
+        <div class="box-lid">📦</div>
+        <div class="box-name">minhaIdade</div>
+        <input class="box-input" id="v-idade" type="text" placeholder="A tua idade" maxlength="10" />
+      </div>
+      <div class="box-card box-3">
+        <div class="box-lid">📦</div>
+        <div class="box-name">meuAnimal</div>
+        <input class="box-input" id="v-animal" type="text" placeholder="O teu animal" maxlength="20" />
+      </div>
+      <div class="box-card box-4">
+        <div class="box-lid">📦</div>
+        <div class="box-name">minhaCorFavorita</div>
+        <input class="box-input" id="v-cor" type="text" placeholder="Cor favorita" maxlength="20" />
+      </div>
+      <div class="box-card box-5">
+        <div class="box-lid">📦</div>
+        <div class="box-name">meuSuperpoder</div>
+        <input class="box-input" id="v-super" type="text" placeholder="O teu superpoder" maxlength="25" />
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <button class="action-btn btn-scramble" onclick="scramble()">🔀 Baralhar Caixas!</button>
+      <button class="action-btn btn-clear" onclick="clearAll()">🗑️ Limpar Tudo</button>
+      <button class="action-btn btn-code" onclick="showCode()">👁️ Ver o Código</button>
+    </div>
+
+    <!-- STORY OUTPUT -->
+    <div class="story-output">
+      <div class="story-label">✨ A Tua História</div>
+      <div class="story-output-text" id="story-text">
+        Olá! O meu nome é <span class="var-highlight var-1" id="s-nome">???</span>
+        e tenho <span class="var-highlight var-2" id="s-idade">???</span> anos.<br>
+        O meu animal preferido chama-se <span class="var-highlight var-3" id="s-animal">???</span>
+        e ele acha que o meu superpoder de
+        <span class="var-highlight var-5" id="s-super">???</span> é incrível!<br>
+        A minha cor favorita é <span class="var-highlight var-4" id="s-cor">???</span>
+        — por isso visto sempre roupas
+        <span class="var-highlight var-4" id="s-cor2">???</span>. 🌟
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CODE MODAL -->
+  <div class="code-overlay" id="code-overlay" onclick="closeCode(event)">
+    <div class="code-modal">
+      <div class="code-modal-header">
+        <div class="code-modal-title">💻 O CÓDIGO POR BAIXO</div>
+        <button class="code-close" onclick="document.getElementById('code-overlay').classList.remove('show')">✕</button>
+      </div>
+      <div class="code-modal-body" id="code-modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    const fields = {
+      nome: document.getElementById('v-nome'),
+      idade: document.getElementById('v-idade'),
+      animal: document.getElementById('v-animal'),
+      cor: document.getElementById('v-cor'),
+      super: document.getElementById('v-super'),
+    };
+
+    const spans = {
+      nome: document.getElementById('s-nome'),
+      idade: document.getElementById('s-idade'),
+      animal: document.getElementById('s-animal'),
+      super: document.getElementById('s-super'),
+      cor: document.getElementById('s-cor'),
+      cor2: document.getElementById('s-cor2'),
+    };
+
+    function val(key) {
+      return fields[key].value.trim() || '???';
+    }
+
+    function popEl(el) {
+      el.classList.remove('pop');
+      void el.offsetWidth;
+      el.classList.add('pop');
+    }
+
+    function updateStory() {
+      const updates = {
+        nome: val('nome'),
+        idade: val('idade'),
+        animal: val('animal'),
+        super: val('super'),
+        cor: val('cor'),
+        cor2: val('cor'),
+      };
+      Object.entries(updates).forEach(([k, v]) => {
+        const el = spans[k];
+        if (el && el.textContent !== v) {
+          el.textContent = v;
+          popEl(el);
+        }
+      });
+    }
+
+    Object.values(fields).forEach(f => f.addEventListener('input', updateStory));
+
+    // Scramble
+    const defaultValues = [
+      { nome: 'Luana', idade: '9', animal: 'Bolinha', cor: 'verde', super: 'voar' },
+      { nome: 'Martim', idade: '10', animal: 'Rex', cor: 'azul', super: 'invisibilidade' },
+      { nome: 'Sofia', idade: '9', animal: 'Mel', cor: 'rosa', super: 'ler mentes' },
+      { nome: 'Tomás', idade: '10', animal: 'Foguete', cor: 'vermelho', super: 'supervelocidade' },
+    ];
+
+    function scramble() {
+      const pick = defaultValues[Math.floor(Math.random() * defaultValues.length)];
+      Object.keys(pick).forEach(k => {
+        if (fields[k]) { fields[k].value = pick[k]; popEl(fields[k]); }
+      });
+      updateStory();
+    }
+
+    function clearAll() {
+      Object.values(fields).forEach(f => f.value = '');
+      updateStory();
+    }
+
+    function showCode() {
+      const n = val('nome'), i = val('idade'), a = val('animal'), c = val('cor'), s = val('super');
+      document.getElementById('code-modal-body').innerHTML = `
+<span class="cm-comment">// 📦 As tuas variáveis na memória do computador:</span>
+<br>
+<span class="cm-keyword">let</span> <span class="cm-var">meuNome</span> = <span class="cm-string">"${n}"</span>;
+<br>
+<span class="cm-keyword">let</span> <span class="cm-var">minhaIdade</span> = <span class="cm-string">"${i}"</span>;
+<br>
+<span class="cm-keyword">let</span> <span class="cm-var">meuAnimal</span> = <span class="cm-string">"${a}"</span>;
+<br>
+<span class="cm-keyword">let</span> <span class="cm-var">minhaCorFavorita</span> = <span class="cm-string">"${c}"</span>;
+<br>
+<span class="cm-keyword">let</span> <span class="cm-var">meuSuperpoder</span> = <span class="cm-string">"${s}"</span>;
+<br><br>
+<span class="cm-comment">// ✨ Construir a história com as variáveis:</span>
+<br>
+<span class="cm-keyword">const</span> <span class="cm-var">historia</span> = <span class="cm-string">\`
+  Olá! O meu nome é <span class="cm-green">\${meuNome}</span> e tenho <span class="cm-green">\${minhaIdade}</span> anos.
+  O meu animal preferido chama-se <span class="cm-green">\${meuAnimal}</span>
+  e ele acha que o meu superpoder de <span class="cm-green">\${meuSuperpoder}</span> é incrível!
+  A minha cor favorita é <span class="cm-green">\${minhaCorFavorita}</span>.
+\`</span>;
+      `;
+      document.getElementById('code-overlay').classList.add('show');
+    }
+
+    function closeCode(e) {
+      if (e.target === document.getElementById('code-overlay')) {
+        document.getElementById('code-overlay').classList.remove('show');
+      }
+    }
+
+    // Pre-fill with example
+    fields.nome.value = 'Ana';
+    fields.idade.value = '9';
+    fields.animal.value = 'Bolinha';
+    fields.cor.value = 'azul';
+    fields.super.value = 'voar';
+    updateStory();
+  </script>
+
+</body>
+</html>

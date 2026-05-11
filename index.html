@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mundo do Código 🚀</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --c1: #FF6B6B;
+      --c2: #FFD93D;
+      --c3: #6BCB77;
+      --c4: #4D96FF;
+      --c5: #C77DFF;
+      --c6: #FF9A3C;
+      --bg: #0F0E17;
+      --card: #1A1926;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Stars background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(2px 2px at 20% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 60% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 95% 75%, rgba(255,255,255,0.3) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--c4), var(--c5));
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      padding: 6px 18px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 0%, var(--c2) 50%, var(--c1) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: rgba(255,255,255,0.7);
+      max-width: 600px;
+      margin: 0 auto 12px;
+      line-height: 1.6;
+    }
+
+    .rocket {
+      font-size: 3rem;
+      display: inline-block;
+      animation: rocket-float 3s ease-in-out infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes rocket-float {
+      0%, 100% { transform: translateY(0) rotate(-10deg); }
+      50% { transform: translateY(-15px) rotate(10deg); }
+    }
+
+    /* GRID */
+    .grid-section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 24px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid transparent;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    .card-top {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-top::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.15);
+    }
+
+    .card-emoji {
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+      transition: transform 0.3s ease;
+    }
+    .card:hover .card-emoji { transform: scale(1.2) rotate(-5deg); }
+
+    .card-body {
+      padding: 20px 22px 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-num {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 6px;
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.65);
+      flex: 1;
+      margin-bottom: 18px;
+    }
+
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: inherit;
+      transition: background 0.2s;
+      align-self: flex-start;
+    }
+    .card:hover .card-btn {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* Card color accents */
+    .card-1 { border-color: var(--c1); }
+    .card-1 .card-top { background: linear-gradient(135deg, #FF6B6B, #FF4040); }
+    .card-1 .card-num, .card-1 .card-btn { color: var(--c1); border-color: var(--c1); }
+    .card-1:hover { box-shadow: 0 24px 60px rgba(255,107,107,0.25); }
+
+    .card-2 { border-color: var(--c2); }
+    .card-2 .card-top { background: linear-gradient(135deg, #FFD93D, #FFC107); }
+    .card-2 .card-num, .card-2 .card-btn { color: var(--c2); border-color: var(--c2); }
+    .card-2:hover { box-shadow: 0 24px 60px rgba(255,217,61,0.25); }
+
+    .card-3 { border-color: var(--c3); }
+    .card-3 .card-top { background: linear-gradient(135deg, #6BCB77, #4CAF50); }
+    .card-3 .card-num, .card-3 .card-btn { color: var(--c3); border-color: var(--c3); }
+    .card-3:hover { box-shadow: 0 24px 60px rgba(107,203,119,0.25); }
+
+    .card-4 { border-color: var(--c4); }
+    .card-4 .card-top { background: linear-gradient(135deg, #4D96FF, #1565C0); }
+    .card-4 .card-num, .card-4 .card-btn { color: var(--c4); border-color: var(--c4); }
+    .card-4:hover { box-shadow: 0 24px 60px rgba(77,150,255,0.25); }
+
+    .card-5 { border-color: var(--c5); }
+    .card-5 .card-top { background: linear-gradient(135deg, #C77DFF, #7B2FBE); }
+    .card-5 .card-num, .card-5 .card-btn { color: var(--c5); border-color: var(--c5); }
+    .card-5:hover { box-shadow: 0 24px 60px rgba(199,125,255,0.25); }
+
+    .card-6 { border-color: var(--c6); }
+    .card-6 .card-top { background: linear-gradient(135deg, #FF9A3C, #E65100); }
+    .card-6 .card-num, .card-6 .card-btn { color: var(--c6); border-color: var(--c6); }
+    .card-6:hover { box-shadow: 0 24px 60px rgba(255,154,60,0.25); }
+
+    /* Footer */
+    .footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 30px;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Decorative floating orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 400px; height: 400px; background: var(--c4); top: -100px; left: -100px; }
+    .orb-2 { width: 300px; height: 300px; background: var(--c5); bottom: 100px; right: -80px; }
+    .orb-3 { width: 200px; height: 200px; background: var(--c1); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <header class="hero">
+    <div class="rocket">🚀</div>
+    <div class="hero-badge">Aula de Programação</div>
+    <h1>Mundo do Código</h1>
+    <p>Bem-vindos! Escolhe uma aventura e descobre como a programação funciona. Cada demo ensina algo novo e divertido!</p>
+  </header>
+
+  <main class="grid-section">
+
+    <a href="build_a_webpage/index.html" class="card card-1">
+      <div class="card-top">
+        <span class="card-emoji">🎨</span>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Demo 01</div>
+        <h2>Cria a Tua Página</h2>
+        <p>Constrói a tua própria página web em tempo real! Escolhe cores, escreve textos e vê tudo a aparecer ao mesmo tempo.</p>
+        <span class="card-btn">Explorar →</span>
+      </div>
+    </a>
+
+    <a href="story_choices/index.html" class="card card-2">
+      <div class="card-top">
+        <span class="card-emoji">📖</span>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Demo 02</div>
+        <h2>A História das Escolhas</h2>
+        <p>Uma aventura interativa onde cada escolha muda a história! Descobre como o computador decide o que fazer com o if/else.</p>
+        <span class="card-btn">Explorar →</span>
+      </div>
+    </a>
+
+    <a href="variable-boxes/index.html" class="card card-3">
+      <div class="card-top">
+        <span class="card-emoji">📦</span>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Demo 03</div>
+        <h2>Caixas de Variáveis</h2>
+        <p>As variáveis são como caixas mágicas! Escreve o teu nome, idade e superpoder — e vê a história mudar na hora.</p>
+        <span class="card-btn">Explorar →</span>
+      </div>
+    </a>
+
+    <a href="signal-chain/index.html" class="card card-4">
+      <div class="card-top">
+        <span class="card-emoji">⚡</span>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Demo 04</div>
+        <h2>Cadeia de Sinais</h2>
+        <p>Move o slider e vê os dados viajarem como eletricidade! Aprende como a informação se transforma de passo em passo.</p>
+        <span class="card-btn">Explorar →</span>
+      </div>
+    </a>
+
+    <a href="restaurant-app/index.html" class="card card-5">
+      <div class="card-top">
+        <span class="card-emoji">🍕</span>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Demo 05</div>
+        <h2>O Restaurante do Código</h2>
+        <p>Faz um pedido e vê o empregado levar a mensagem para a cozinha! Assim é que funciona a internet: pedido e resposta.</p>
+        <span class="card-btn">Explorar →</span>
+      </div>
+    </a>
+
+    <a href="language-switcher/index.html" class="card card-6">
+      <div class="card-top">
+        <span class="card-emoji">🌍</span>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Demo 06</div>
+        <h2>Mudador de Idiomas</h2>
+        <p>Clica numa bandeira e toda a aplicação muda de idioma num instante! Aprende como as apps falam com pessoas do mundo inteiro.</p>
+        <span class="card-btn">Explorar →</span>
+      </div>
+    </a>
+
+  </main>
+
+  <footer class="footer">
+    Feito com ❤️ para a turma do 4.º ano &nbsp;·&nbsp; Alfacoop Demo
+  </footer>
+
+</body>
+</html>

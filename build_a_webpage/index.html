@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cria a Tua Página 🎨</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #1A0A2E;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: #fff; }
+    .topbar-title {
+      font-weight: 900;
+      font-size: 1.1rem;
+      flex: 1;
+      text-align: center;
+    }
+    .topbar-emoji { font-size: 1.4rem; }
+
+    /* MAIN LAYOUT */
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      height: calc(100vh - 57px);
+    }
+
+    /* LEFT PANEL */
+    .panel-left {
+      background: #1E0D35;
+      border-right: 2px solid rgba(255,107,107,0.3);
+      padding: 28px 22px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 900;
+      color: #FF6B6B;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .field-input {
+      background: rgba(255,255,255,0.07);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      width: 100%;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .field-input:focus { border-color: #FF6B6B; }
+    .field-input::placeholder { color: rgba(255,255,255,0.25); }
+
+    textarea.field-input {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Color Grid */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .color-swatch {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .color-swatch:hover { transform: scale(1.1); }
+    .color-swatch.active { border-color: #fff; transform: scale(1.1); }
+
+    /* Font size slider */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .field-slider {
+      flex: 1;
+      accent-color: #FF6B6B;
+      cursor: pointer;
+    }
+    .slider-val {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #FF6B6B;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Share button */
+    .share-btn {
+      background: linear-gradient(135deg, #FF6B6B, #FF4040);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 20px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .share-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,64,64,0.4); }
+    .share-btn:active { transform: scale(0.97); }
+
+    .fake-url {
+      background: rgba(107,203,119,0.1);
+      border: 1px solid rgba(107,203,119,0.35);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      color: #6BCB77;
+      font-weight: 700;
+      text-align: center;
+      display: none;
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    /* RIGHT PANEL - Browser Preview */
+    .panel-right {
+      background: #2D1B4E;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 16px;
+    }
+
+    .browser-chrome {
+      background: #3A2360;
+      border-radius: 16px 16px 0 0;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .browser-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .dot-r { background: #FF5F56; }
+    .dot-y { background: #FFBD2E; }
+    .dot-g { background: #27C93F; }
+
+    .address-bar {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      font-family: monospace;
+    }
+
+    .browser-window {
+      flex: 1;
+      border-radius: 0 0 16px 16px;
+      overflow: hidden;
+      border: 2px solid #3A2360;
+      border-top: none;
+    }
+
+    #preview-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #fff;
+    }
+
+    .preview-hint {
+      text-align: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Tag badge */
+    .tag {
+      display: inline-block;
+      background: rgba(255,107,107,0.15);
+      color: #FF6B6B;
+      border: 1px solid rgba(255,107,107,0.3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 700px) {
+      .workspace { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; }
+      .panel-left { height: auto; }
+      .panel-right { height: 50vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="../index.html" class="back-btn">← Voltar</a>
+    <div class="topbar-title">🎨 Cria a Tua Página</div>
+    <span class="tag">Demo 01</span>
+  </div>
+
+  <div class="workspace">
+
+    <!-- LEFT: CONTROLS -->
+    <aside class="panel-left">
+      <div class="panel-title">✏️ O Teu Editor</div>
+
+      <div class="field-group">
+        <div class="field-label">Título da Página</div>
+        <input id="page-title" class="field-input" type="text" placeholder="Ex: A minha página incrível!" value="A Minha Página" />
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Tamanho do Título</div>
+        <div class="slider-row">
+          <input id="title-size" class="field-slider" type="range" min="20" max="72" value="42" />
+          <span class="slider-val" id="title-size-val">42px</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field-group">
+        <div class="field-label">Cor de Fundo</div>
+        <div class="color-grid" id="color-grid"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Cor do Texto</div>
+        <div class="color-grid" id="text-color-grid"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field-group">
+        <div class="field-label">A Tua Mensagem</div>
+        <textarea id="page-text" class="field-input" placeholder="Escreve aqui o que quiseres...">Olá! Esta é a minha primeira página web. Eu criei-a com o meu próprio código! 🌟</textarea>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Tamanho do Texto</div>
+        <div class="slider-row">
+          <input id="text-size" class="field-slider" type="range" min="12" max="36" value="18" />
+          <span class="slider-val" id="text-size-val">18px</span>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Adiciona um Emoji</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <button class="emoji-btn" onclick="addEmoji('🌟')">🌟</button>
+          <button class="emoji-btn" onclick="addEmoji('🚀')">🚀</button>
+          <button class="emoji-btn" onclick="addEmoji('❤️')">❤️</button>
+          <button class="emoji-btn" onclick="addEmoji('🦄')">🦄</button>
+          <button class="emoji-btn" onclick="addEmoji('🎉')">🎉</button>
+          <button class="emoji-btn" onclick="addEmoji('🐶')">🐶</button>
+          <button class="emoji-btn" onclick="addEmoji('⚡')">⚡</button>
+          <button class="emoji-btn" onclick="addEmoji('🌈')">🌈</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <button class="share-btn" onclick="shareMyPage()">🔗 Partilhar a Minha Página!</button>
+      <div class="fake-url" id="fake-url"></div>
+
+    </aside>
+
+    <!-- RIGHT: PREVIEW -->
+    <div class="panel-right">
+      <div class="preview-hint">👁️ Pré-visualização em tempo real — o que vês aqui é o que aparece no browser!</div>
+      <div style="flex:1; display:flex; flex-direction:column;">
+        <div class="browser-chrome">
+          <div class="browser-dots">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+          </div>
+          <div class="address-bar" id="address-bar">🔒 www.minha-pagina.pt</div>
+        </div>
+        <div class="browser-window">
+          <iframe id="preview-frame"></iframe>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    .emoji-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .emoji-btn:hover { transform: scale(1.2); background: rgba(255,255,255,0.15); }
+  </style>
+
+  <script>
+    const bgColors = [
+      '#FFFDE7','#FFF3E0','#FCE4EC','#E8F5E9','#E3F2FD',
+      '#F3E5F5','#FFF8E1','#E0F7FA','#FFEBEE','#F1F8E9',
+      '#1A1A2E','#0F3460','#16213E','#1B4332','#3D1A78'
+    ];
+    const textColors = [
+      '#212121','#1A237E','#B71C1C','#1B5E20','#880E4F',
+      '#E65100','#006064','#4A148C','#FF6B6B','#FFD93D',
+      '#FFFFFF','#F8BBD0','#B3E5FC','#C8E6C9','#FFE0B2'
+    ];
+
+    let selectedBg = '#FFFDE7';
+    let selectedTextColor = '#212121';
+
+    function buildColorGrid(id, colors, onSelect, current) {
+      const grid = document.getElementById(id);
+      grid.innerHTML = '';
+      colors.forEach(c => {
+        const s = document.createElement('div');
+        s.className = 'color-swatch' + (c === current ? ' active' : '');
+        s.style.background = c;
+        s.style.border = '3px solid ' + (c === '#FFFFFF' ? '#ddd' : 'transparent');
+        s.addEventListener('click', () => {
+          grid.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+          s.classList.add('active');
+          onSelect(c);
+        });
+        grid.appendChild(s);
+      });
+    }
+
+    buildColorGrid('color-grid', bgColors, c => { selectedBg = c; updatePreview(); }, selectedBg);
+    buildColorGrid('text-color-grid', textColors, c => { selectedTextColor = c; updatePreview(); }, selectedTextColor);
+
+    // Inputs
+    const inputs = ['page-title','page-text','title-size','text-size'];
+    inputs.forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', () => {
+        if (id === 'title-size') document.getElementById('title-size-val').textContent = el.value + 'px';
+        if (id === 'text-size') document.getElementById('text-size-val').textContent = el.value + 'px';
+        updatePreview();
+      });
+    });
+
+    function addEmoji(emoji) {
+      const ta = document.getElementById('page-text');
+      ta.value += ' ' + emoji;
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const title = document.getElementById('page-title').value || 'A Minha Página';
+      const text = document.getElementById('page-text').value || '';
+      const titleSize = document.getElementById('title-size').value;
+      const textSize = document.getElementById('text-size').value;
+
+      const html = `<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: ${selectedBg};
+    color: ${selectedTextColor};
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+  }
+  h1 { font-size: ${titleSize}px; font-weight: 900; margin-bottom: 20px; line-height: 1.2; }
+  p { font-size: ${textSize}px; line-height: 1.6; max-width: 600px; white-space: pre-wrap; }
+  .made-with { margin-top: 40px; font-size: 13px; opacity: 0.5; }
+</style>
+</head>
+<body>
+<h1>${escapeHtml(title)}</h1>
+<p>${escapeHtml(text)}</p>
+<div class="made-with">Feito com ❤️ no Mundo do Código</div>
+</body>
+</html>`;
+
+      const frame = document.getElementById('preview-frame');
+      frame.srcdoc = html;
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function shareMyPage() {
+      // Build query params from current settings
+      const params = new URLSearchParams({
+        title:     document.getElementById('page-title').value,
+        titleSize: document.getElementById('title-size').value,
+        text:      document.getElementById('page-text').value,
+        textSize:  document.getElementById('text-size').value,
+        bg:        selectedBg,
+        color:     selectedTextColor,
+      });
+
+      const shareUrl = window.location.origin + window.location.pathname + '?' + params.toString();
+
+      // Copy to clipboard
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const box = document.getElementById('fake-url');
+        box.style.display = 'block';
+        box.innerHTML = '✅ Link copiado! Cola-o noutro browser para ver a tua página:<br><small style="word-break:break-all;opacity:0.7">' + shareUrl + '</small>';
+        document.getElementById('address-bar').textContent = '🔒 ' + shareUrl.replace(/^https?:\/\//, '');
+      }).catch(() => {
+        // Fallback if clipboard is not available (e.g. file://)
+        const box = document.getElementById('fake-url');
+        box.style.display = 'block';
+        box.innerHTML = '🔗 Copia este link:<br><small style="word-break:break-all;opacity:0.7">' + shareUrl + '</small>';
+        document.getElementById('address-bar').textContent = '🔒 ' + shareUrl.replace(/^https?:\/\//, '');
+      });
+    }
+
+    // On load: restore settings from URL params if present
+    function loadFromParams() {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has('title')) return; // nothing to restore
+
+      if (params.get('title'))     document.getElementById('page-title').value = params.get('title');
+      if (params.get('titleSize')) {
+        document.getElementById('title-size').value = params.get('titleSize');
+        document.getElementById('title-size-val').textContent = params.get('titleSize') + 'px';
+      }
+      if (params.get('text'))      document.getElementById('page-text').value = params.get('text');
+      if (params.get('textSize'))  {
+        document.getElementById('text-size').value = params.get('textSize');
+        document.getElementById('text-size-val').textContent = params.get('textSize') + 'px';
+      }
+      if (params.get('bg'))    { selectedBg = params.get('bg'); }
+      if (params.get('color')) { selectedTextColor = params.get('color'); }
+
+      // Rebuild color grids with restored selection
+      buildColorGrid('color-grid', bgColors, c => { selectedBg = c; updatePreview(); }, selectedBg);
+      buildColorGrid('text-color-grid', textColors, c => { selectedTextColor = c; updatePreview(); }, selectedTextColor);
+    }
+
+    // Initial render
+    loadFromParams();
+    updatePreview();
+  </script>
+
+</body>
+</html>
